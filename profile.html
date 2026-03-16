@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Juliana Bonde - Creator Profile</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="css/modal.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/feather-icons"></script>
+  <style>
+    /* V2 Profile Specific Styles */
+    body {
+      padding-top: 1rem;
+    }
+
+    .profile-container {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      margin: 0 1rem 1rem;
+      padding-bottom: 1.5rem;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Header */
+    .profile-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      background: transparent;
+    }
+
+    .profile-top-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-align: center;
+      flex: 1;
+    }
+
+    /* Banner & Avatar */
+    .banner-container {
+      position: relative;
+      margin: 0 1rem;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      overflow: hidden;
+    }
+
+    .profile-banner {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .profile-header-content {
+      position: relative;
+      padding: 0 1rem;
+    }
+
+    .profile-avatar {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      border: 3px solid var(--card-bg);
+      object-fit: cover;
+      margin-top: -38px;
+      position: relative;
+      background: #dee2e6;
+      z-index: 2;
+    }
+
+    /* Tiny Stats (Top Right) */
+    .tiny-stats {
+      position: absolute;
+      top: 0.5rem;
+      right: 1rem;
+      display: flex;
+      gap: 0.75rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .tiny-stat-item {
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+    }
+
+    .tiny-stat-item i {
+      width: 12px;
+      height: 12px;
+    }
+
+    /* Bio Info */
+    .profile-info {
+      margin-top: 0.25rem;
+    }
+
+    .profile-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .verified-badge {
+      color: var(--primary-color);
+      width: 16px;
+      height: 16px;
+    }
+
+    .profile-handle {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .profile-bio {
+      font-size: 0.85rem;
+      line-height: 1.4;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .bio-read-more {
+      color: var(--primary-color);
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: block;
+      margin-bottom: 1rem;
+      cursor: pointer;
+    }
+
+    .social-links {
+      display: flex;
+      margin-bottom: 1.5rem;
+    }
+
+    .social-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      background: #f1f3f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-main);
+    }
+
+    /* Offer Box */
+    .offer-box {
+      background: #fafafa;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .offer-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 0.75rem;
+      color: var(--primary-hover);
+    }
+
+    .offer-desc {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: white;
+      border: 1px solid var(--border-color);
+      padding: 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .offer-desc img {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+    }
+
+    .offer-btn-container {
+      position: relative;
+      text-align: center;
+    }
+
+    .save-tag {
+      position: absolute;
+      top: -10px;
+      left: 1rem;
+      background: white;
+      color: var(--success-color);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      z-index: 2;
+    }
+
+    .original-price {
+      display: block;
+      text-align: right;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-decoration: line-through;
+      margin-top: 0.25rem;
+    }
+
+    /* Subscriptions List */
+    .subs-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+      cursor: pointer;
+    }
+
+    .tier-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .tier-btn {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.8rem 1rem;
+      background: var(--primary-color);
+      border-radius: var(--radius-full);
+      color: var(--text-main);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+      width: 100%;
+    }
+
+    .tier-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    .tier-btn span:last-child {
+      font-weight: 800;
+    }
+
+    /* Stats Tabs */
+    .stats-tabs {
+      display: flex;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin: 0 1rem 1rem;
+      background: var(--card-bg);
+    }
+
+    .tab-item {
+      flex: 1;
+      text-align: center;
+      padding: 0.75rem 0;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      cursor: pointer;
+    }
+
+    .tab-item:first-child {
+      border-right: 1px solid var(--border-color);
+    }
+
+    .tab-item.active {
+      color: var(--primary-hover);
+    }
+
+    .tab-item i {
+      width: 14px;
+      height: 14px;
+      color: var(--primary-color);
+    }
+
+    /* Post Card Tweaks for V2 */
+    .post-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      margin: 0 1rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .locked-content {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #e9ecef;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .locked-media {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: blur(20px) brightness(0.8);
+      transform: scale(1.1);
+    }
+
+    .lock-overlay {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Bottom Nav Match */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      max-width: 600px;
+      height: 60px;
+      background: white;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.65rem;
+    }
+
+    .nav-item i {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* FAQ Accordion Styles */
+    .faq-container {
+      margin: 2rem 1rem;
+    }
+    .faq-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--text-main);
+    }
+    .faq-item {
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      margin-bottom: 0.75rem;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .faq-question {
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-main);
+      user-select: none;
+    }
+    .faq-icon {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.3s ease;
+      color: var(--text-muted);
+    }
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg); /* + turns into x */
+    }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      padding: 0 1rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      background: #fafafa;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+    }
+    .faq-item.open .faq-answer {
+      max-height: 200px;
+      padding: 0 1rem 1rem 1rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="app-container">
+
+    <!-- Top Header -->
+    <div class="profile-top-bar" id="topHeader">
+      <div style="width: 24px;"></div> <!-- Spacer -->
+      <div class="profile-top-name">
+        <img src="images/privacy-logo.svg" onerror="this.src='privacy-logo.svg'" alt="Logo" id="topLogo"
+          style="height: 24px; transition: opacity 0.3s; vertical-align: middle;">
+      </div>
+      <button class="header-action" style="position: static;"><i data-feather="more-vertical"></i></button>
+    </div>
+
+    <!-- Main Profile Card -->
+    <div class="profile-container">
+
+      <!-- Banner -->
+      <div class="banner-container">
+        <!-- Reusing a similar dark aesthetic banner -->
+        <img src="images/banner.jpg" alt="Banner" class="profile-banner">
+      </div>
+
+      <div class="profile-header-content">
+        <!-- Avatar overlapping banner -->
+        <img src="images/avatar.jpg" alt="Avatar" class="profile-avatar">
+
+        <!-- Tiny Stats Row -->
+        <div class="tiny-stats">
+          <div class="tiny-stat-item"><i data-feather="image"></i> 269</div>
+          <div class="tiny-stat-item"><i data-feather="video"></i> 123</div>
+          <div class="tiny-stat-item"><i data-feather="user"></i> 10</div>
+          <div class="tiny-stat-item"><i data-feather="heart"></i> 5.6K</div>
+        </div>
+
+        <!-- Bio -->
+        <div class="profile-info">
+          <div class="profile-name">
+            Juliana Bonde
+            <i data-feather="check-circle" class="verified-badge"></i>
+          </div>
+          <div class="profile-handle">@julianabonde</div>
+
+          <div class="profile-bio" id="profileBio"
+            style="display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+            🚨ATENÇÃO: QUER SER O PRÓXIMO ASSINANTE A GRAVAR COMIGO, A TOP 1 DO BRASIL?🥇 CORRE E ME CHAMA NO CHAT! 🚨
+            CONTEÚDOS EXPLÍCITOS (SEM FRESCURA). Vamos conversar gostoso e quem sabe se a química rolar nos conhecermos
+            pessoalmente e vc ter meu WhatsApp pessoal? Espero que vc seja tão safado como eu! 📲 CHAMADA DE VÍDEO? Tem!
+            Será que vc está preparado para me ver mais de perto e realizar todos seus fetiches? CONTEÚDO PESADO.🔥😈
+            Quem entra aqui fica VICIADO , vc nunca mais vai querer sair daqui ! Respondo TODOS os meus assinantes nas
+            mensagens, já chega mandando aquele “oi” SAFADO monstrando pra que veio! Então, vai me ter agora ou vai
+            passar o dia imaginando como seria?
+          </div>
+          <span class="bio-read-more" id="readMoreBtn" onclick="toggleBio()">Ler mais</span>
+
+          <div class="social-links"
+            style="font-weight: 600; color: var(--primary-color); display: flex; align-items: center; gap: 0.5rem;">
+            <i data-feather="gift"></i> Oferta Especial: Chamada de vídeo!
+          </div>
+
+          <!-- Offer Box -->
+          <div class="offer-box" id="subscriptionOptions">
+            <div class="offer-title">
+              <i data-feather="star" style="width: 14px; fill: currentColor;"></i> Oferta de assinatura
+            </div>
+
+            <div class="offer-desc">
+              <img src="images/avatar.jpg" alt="Mini avatar">
+              Eu inteira pela metade do preço mô 😘🤤
+            </div>
+
+            <div class="offer-btn-container">
+              <span class="save-tag">Economize 67%</span>
+              <button class="btn btn-primary" style="height: 48px; position: relative;"
+                onclick="openPaymentModal(9.90, '1 Mês VIP')">Mensal assinar agora R$ 9,90</button>
+              <span class="original-price">Preço original <strike>R$ 29,99</strike></span>
+            </div>
+          </div>
+
+          <div class="subs-header" style="margin-top: 1.5rem;">
+            Promoções
+          </div>
+          <div class="tier-list">
+            <button class="tier-btn" style="justify-content: space-between;"
+              onclick="openPaymentModal(24.90, '3 Meses VIP')">
+              <span>3 meses (15% off + oferta especial)</span>
+              <span>R$ 24,90</span>
+            </button>
+            <button class="tier-btn" style="justify-content: space-between;"
+              onclick="openPaymentModal(39.90, '6 Meses VIP')">
+              <span>6 meses (30% off)</span>
+              <span>R$ 39,90</span>
+            </button>
+          </div>
+
+        </div>
+      </div> <!-- End Main Profile Card -->
+
+      <!-- Stats Tabs -->
+      <div class="stats-tabs">
+        <div class="tab-item active" onclick="switchTab('posts')" id="tabPosts">
+          <i data-feather="smartphone"></i> 379 Postagens
+        </div>
+        <div class="tab-item" onclick="switchTab('media')" id="tabMedia">
+          <i data-feather="film"></i> 392 Mídias
+        </div>
+      </div>
+
+      <div id="postsSection">
+        <!-- User Header per Post (like bottom of screenshot) -->
+        <div class="profile-container"
+          style="padding: 1rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <img src="images/avatar.jpg" alt="Avatar" style="width: 40px; height: 40px; border-radius: 50%;">
+            <div>
+              <div style="font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 0.2rem;">
+                Juliana Bonde <i data-feather="check-circle" style="color: var(--primary-color); width: 14px;"></i>
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">@julianabonde</div>
+            </div>
+          </div>
+          <i data-feather="more-vertical" style="color: var(--text-muted); width: 18px;"></i>
+        </div>
+
+        <!-- Post 1: Image Preview -->
+        <div class="post-card">
+          <div class="locked-content">
+            <img src="images/fotodepostagem.jpg" class="locked-media" alt="Locked Image" style="filter: blur(20px);">
+            <div class="lock-overlay">
+              <i data-feather="lock"
+                style="width: 48px; height: 48px; margin-bottom: 0.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));"></i>
+              <div style="font-weight: 600; font-size: 1.1rem; margin-bottom: 1rem;">Subscribe to unlock</div>
+              <button class="btn btn-primary" style="padding: 0.5rem 1.5rem; font-size: 0.9rem; width: auto;"
+                onclick="scrollToSubscriptions()">Assinar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Post 2: Video Preview 1 -->
+        <div class="post-card">
+          <div class="locked-content">
+            <video autoplay muted loop playsinline class="locked-media" style="filter: blur(20px); object-fit: cover;">
+              <source src="media/589g3k (online-video-cutter.com).mp4" type="video/mp4">
+            </video>
+            <div class="lock-overlay">
+              <i data-feather="lock"
+                style="width: 48px; height: 48px; margin-bottom: 0.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));"></i>
+              <div style="font-weight: 600; font-size: 1.1rem; margin-bottom: 1rem;">Subscribe to unlock</div>
+              <div
+                style="background: rgba(0,0,0,0.6); padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 4px;">
+                <i data-feather="video" style="width: 14px;"></i> Video
+              </div>
+              <button class="btn btn-primary" style="padding: 0.5rem 1.5rem; font-size: 0.9rem; width: auto;"
+                onclick="scrollToSubscriptions()">Assinar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Post 3: Video Preview 2 -->
+        <div class="post-card">
+          <div class="locked-content">
+            <video autoplay muted loop playsinline class="locked-media" style="filter: blur(20px); object-fit: cover;">
+              <source src="media/IMG_2810.MP4" type="video/mp4">
+            </video>
+            <div class="lock-overlay">
+              <i data-feather="lock"
+                style="width: 48px; height: 48px; margin-bottom: 0.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));"></i>
+              <div style="font-weight: 600; font-size: 1.1rem; margin-bottom: 1rem;">Subscribe to unlock</div>
+              <div
+                style="background: rgba(0,0,0,0.6); padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 4px;">
+                <i data-feather="video" style="width: 14px;"></i> Video
+              </div>
+              <button class="btn btn-primary" style="padding: 0.5rem 1.5rem; font-size: 0.9rem; width: auto;"
+                onclick="scrollToSubscriptions()">Assinar</button>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- End postsSection -->
+
+      <div id="mediaSection" style="display: none; padding: 0 1rem; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 1rem;">
+          <div
+            style="background: var(--primary-color); color: white; padding: 0.3rem 1.2rem; border-radius: var(--radius-full); font-weight: 500; font-size: 0.9rem; cursor: pointer;">
+            Todos</div>
+          <div
+            style="color: var(--text-main); padding: 0.3rem 0; font-weight: 500; font-size: 0.9rem; cursor: pointer;">
+            Fotos</div>
+          <div
+            style="color: var(--text-main); padding: 0.3rem 0; font-weight: 500; font-size: 0.9rem; cursor: pointer;">
+            Vídeos</div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+          <!-- 6 items: 3 columns x 2 rows -->
+          <div onclick="scrollToSubscriptions()"
+            style="background: #fdfaf6; border-radius: 12px; width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #f1f3f5;">
+            <i data-feather="lock" style="color: #6b7280; width: 20px;"></i>
+          </div>
+          <div onclick="scrollToSubscriptions()"
+            style="background: #fdfaf6; border-radius: 12px; width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #f1f3f5;">
+            <i data-feather="lock" style="color: #6b7280; width: 20px;"></i>
+          </div>
+          <div onclick="scrollToSubscriptions()"
+            style="background: #fdfaf6; border-radius: 12px; width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #f1f3f5;">
+            <i data-feather="lock" style="color: #6b7280; width: 20px;"></i>
+          </div>
+          <div onclick="scrollToSubscriptions()"
+            style="background: #fdfaf6; border-radius: 12px; width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #f1f3f5;">
+            <i data-feather="lock" style="color: #6b7280; width: 20px;"></i>
+          </div>
+          <div onclick="scrollToSubscriptions()"
+            style="background: #fdfaf6; border-radius: 12px; width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #f1f3f5;">
+            <i data-feather="lock" style="color: #6b7280; width: 20px;"></i>
+          </div>
+          <div onclick="scrollToSubscriptions()"
+            style="background: #fdfaf6; border-radius: 12px; width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #f1f3f5;">
+            <i data-feather="lock" style="color: #6b7280; width: 20px;"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ Accordion -->
+      <div class="faq-container">
+        <div class="faq-title">Perguntas Frequentes</div>
+        
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            É sigiloso? Vai aparecer na fatura?
+            <i data-feather="plus" class="faq-icon"></i>
+          </div>
+          <div class="faq-answer">
+            Sim, é sigiloso. Cobrança discreta, sem nomes chamativos. Seus dados ficam criptografados.
+          </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            Quando tenho acesso depois do pagamento?
+            <i data-feather="plus" class="faq-icon"></i>
+          </div>
+          <div class="faq-answer">
+            Imediato. Pagamento aprovado = liberação em até 10s e e-mail contendo o login de acesso.
+          </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            Posso cancelar quando quiser? A assinatura renova?
+            <i data-feather="plus" class="faq-icon"></i>
+          </div>
+          <div class="faq-answer">
+            Sim. Você pode cancelar a renovação automática pela área do assinante a qualquer momento.
+          </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            Tem reembolso?
+            <i data-feather="plus" class="faq-icon"></i>
+          </div>
+          <div class="faq-answer">
+            Sim. Reembolso de 7 dias sem burocracia. Se não curtir, devolvemos 100%.
+          </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            Como funciona a "chamada de vídeo"?
+            <i data-feather="plus" class="faq-icon"></i>
+          </div>
+          <div class="faq-answer">
+            Basta mandar uma mensagem no chat do produtor e combinar.
+          </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            Posso pedir conteúdo personalizado?
+            <i data-feather="plus" class="faq-icon"></i>
+          </div>
+          <div class="faq-answer">
+            Sim! Solicitações podem ser feitas no chat do produtor, com o conteúdo desejado.
+          </div>
+        </div>
+      </div>
+
+  </main>
+
+  <!-- Pix Payment Modal -->
+  <div class="modal-overlay" id="pixModal">
+    <div class="payment-modal">
+      <button class="modal-close" onclick="closePaymentModal()"><i data-feather="x"></i></button>
+
+      <div id="modalLoading" style="padding: 2rem 0; text-align: center;">
+        <div class="loader"></div>
+        <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;">Gerando o seu código PIX seguro...</p>
+      </div>
+
+      <div id="modalContent" style="display: none;">
+        <div class="modal-title">Finalize o pagamento para liberar seu acesso.</div>
+        <div class="modal-desc">Valor: <strong id="pixAmountDisplay">R$ 0,00</strong></div>
+
+        <div class="qr-code-container">
+          <img id="qrCodeImage" src="" alt="QR Code PIX">
+        </div>
+
+        <div class="pix-copy-section">
+          <div style="font-size: 0.85rem; font-weight: 600; text-align: center;">PIX copia e cola</div>
+          <div class="pix-code-display" id="pixCodeText"></div>
+          <button class="copy-btn" onclick="copyPixCode()"><i data-feather="copy" style="width: 16px;"></i> COPIAR
+            CÓDIGO PIX</button>
+        </div>
+
+        <div class="modal-footer">
+          <i data-feather="lock" style="width: 14px;"></i> Após o pagamento o acesso será liberado automaticamente.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    feather.replace();
+
+    // Top logo scroll effect
+    window.addEventListener('scroll', () => {
+      const logo = document.getElementById('topLogo');
+      if (logo) {
+        if (window.scrollY > 50) {
+          logo.style.opacity = '0';
+          logo.style.pointerEvents = 'none';
+        } else {
+          logo.style.opacity = '1';
+          logo.style.pointerEvents = 'auto';
+        }
+      }
+    });
+
+    // Bio read more toggle
+    function toggleBio() {
+      const bio = document.getElementById('profileBio');
+      const btn = document.getElementById('readMoreBtn');
+      if (bio.style.webkitLineClamp === '3') {
+        bio.style.webkitLineClamp = 'unset';
+        bio.style.lineClamp = 'unset';
+        btn.textContent = 'Ler menos';
+      } else {
+        bio.style.webkitLineClamp = '3';
+        bio.style.lineClamp = '3';
+        btn.textContent = 'Ler mais';
+      }
+    }
+
+    // Scroll to Assinaturas
+    function scrollToSubscriptions() {
+      document.getElementById('subscriptionOptions').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // FAQ Toggle
+    function toggleFaq(element) {
+      // Optional: Close all others
+      // document.querySelectorAll('.faq-item').forEach(item => {
+      //   if (item !== element) item.classList.remove('open');
+      // });
+      
+      element.classList.toggle('open');
+    }
+
+    // Tab switching
+    function switchTab(tab) {
+      document.getElementById('tabPosts').classList.remove('active');
+      document.getElementById('tabMedia').classList.remove('active');
+      document.getElementById('postsSection').style.display = 'none';
+      document.getElementById('mediaSection').style.display = 'none';
+
+      if (tab === 'posts') {
+        document.getElementById('tabPosts').classList.add('active');
+        document.getElementById('postsSection').style.display = 'block';
+      } else {
+        document.getElementById('tabMedia').classList.add('active');
+        document.getElementById('mediaSection').style.display = 'block';
+      }
+    }
+
+    // PIX Checkout Flow
+    let pixPollingInterval = null;
+    let currentPixCode = "";
+
+    async function openPaymentModal(amount, planName) {
+      // Show modal and loading state
+      const modal = document.getElementById('pixModal');
+      const loader = document.getElementById('modalLoading');
+      const content = document.getElementById('modalContent');
+
+      document.getElementById('pixAmountDisplay').innerText = 'R$ ' + amount.toFixed(2).replace('.', ',');
+      modal.classList.add('active');
+      loader.style.display = 'block';
+      content.style.display = 'none';
+
+      try {
+        // 1. Generate Token
+        const tokenRes = await fetch('https://api.syncpayments.com.br/api/partner/v1/auth-token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            client_id: "8650d6eb-0fc4-4038-b37c-0a21260ec974",
+            client_secret: "571443fa-ba18-404a-8e95-09dc4dc72bfe"
+          })
+        });
+
+        if (!tokenRes.ok) throw new Error('Failed to get token');
+        const tokenData = await tokenRes.json();
+        const accessToken = tokenData.access_token;
+
+        // 2. Create PIX payment
+        const cashInRes = await fetch('https://api.syncpayments.com.br/api/partner/v1/cash-in', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+          },
+          body: JSON.stringify({
+            amount: amount,
+            description: "Acesso VIP",
+            client: {
+              name: "Cliente",
+              cpf: "12345678900",
+              email: "cliente@email.com",
+              phone: "11999999999"
+            }
+          })
+        });
+
+        if (!cashInRes.ok) throw new Error('Failed to create PIX');
+        const cashInData = await cashInRes.json();
+        const pixCode = cashInData.pix_code;
+        const identifier = cashInData.identifier || cashInData.id;
+
+        currentPixCode = pixCode;
+
+        // Setup UI
+        document.getElementById('pixCodeText').innerText = pixCode;
+        document.getElementById('qrCodeImage').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(pixCode)}`;
+
+        loader.style.display = 'none';
+        content.style.display = 'block';
+
+        // 3. Start Polling
+        startPaymentVerification(identifier, accessToken);
+
+      } catch (error) {
+        console.error('API Error:', error);
+        alert('Ocorreu um erro ao gerar o pagamento. Estamos tentando simular o sucesso para acesso.');
+        // Fallback for demo if API fails
+        setTimeout(() => {
+          window.location.href = 'error.html';
+        }, 5000);
+      }
+    }
+
+    function closePaymentModal() {
+      document.getElementById('pixModal').classList.remove('active');
+      if (pixPollingInterval) clearInterval(pixPollingInterval);
+    }
+
+    function copyPixCode() {
+      if (!currentPixCode) return;
+      navigator.clipboard.writeText(currentPixCode).then(() => {
+        alert('Código PIX Copiado!');
+      }).catch(err => {
+        console.error('Failed to copy', err);
+      });
+    }
+
+    function startPaymentVerification(identifier, token) {
+      if (pixPollingInterval) clearInterval(pixPollingInterval);
+
+      pixPollingInterval = setInterval(async () => {
+        try {
+          const res = await fetch(`https://api.syncpayments.com.br/api/partner/v1/transaction/${identifier}`, {
+            headers: {
+              'Accept': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          if (res.ok) {
+            const statusData = await res.json();
+            if (statusData && statusData.data && statusData.data.status === 'completed') {
+              clearInterval(pixPollingInterval);
+              window.location.href = 'error.html';
+            }
+          }
+        } catch (e) {
+          console.error("Polling error", e);
+        }
+      }, 5000);
+    }
+
+  </script>
+</body>
+
+</html>
