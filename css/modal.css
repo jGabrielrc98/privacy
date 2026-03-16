@@ -156,3 +156,49 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* Registration Form Specifics */
+.reg-input-container {
+  position: relative;
+  width: 100%;
+}
+.reg-label {
+  position: absolute;
+  top: 0.5rem;
+  left: 1rem;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+.reg-input {
+  width: 100%;
+  background: #f7f3ec;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  padding: 1.4rem 1rem 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  outline: none;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+.reg-input:focus {
+  border-color: #ef4444;
+  background: white;
+}
+.reg-btn {
+  background: #fbcba8;
+  color: #431407;
+  font-weight: 600;
+  width: 100%;
+  padding: 1rem;
+  border-radius: 25px;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  margin-top: 0.5rem;
+}
+.reg-btn:hover {
+  opacity: 0.9;
+}

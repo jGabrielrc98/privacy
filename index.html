@@ -495,7 +495,7 @@
             <div class="offer-btn-container">
               <span class="save-tag">Economize 67%</span>
               <button class="btn btn-primary" style="height: 48px; position: relative;"
-                onclick="openPaymentModal(9.90, '1 Mês VIP')">Mensal assinar agora R$ 9,90</button>
+                onclick="initiateCheckout(9.90, '1 Mês VIP')">Mensal assinar agora R$ 9,90</button>
               <span class="original-price">Preço original <strike>R$ 29,99</strike></span>
             </div>
           </div>
@@ -505,12 +505,12 @@
           </div>
           <div class="tier-list">
             <button class="tier-btn" style="justify-content: space-between;"
-              onclick="openPaymentModal(24.90, '3 Meses VIP')">
+              onclick="initiateCheckout(24.90, '3 Meses VIP')">
               <span>3 meses (15% off + oferta especial)</span>
               <span>R$ 24,90</span>
             </button>
             <button class="tier-btn" style="justify-content: space-between;"
-              onclick="openPaymentModal(39.90, '6 Meses VIP')">
+              onclick="initiateCheckout(39.90, '6 Meses VIP')">
               <span>6 meses (30% off)</span>
               <span>R$ 39,90</span>
             </button>
@@ -709,6 +709,61 @@
 
   </main>
 
+  <!-- Registration Modal -->
+  <div class="modal-overlay" id="registerModal">
+    <div class="payment-modal" style="padding: 0; overflow: hidden; max-width: 450px;">
+      <button class="modal-close" onclick="closeRegisterModal()" style="color: white; z-index: 10; background: rgba(0,0,0,0.4); border-radius: 50%; width: 28px; height: 28px; top: 0.75rem; right: 0.75rem; display: flex; justify-content: center; align-items: center;"><i data-feather="x" style="width: 16px;"></i></button>
+
+      <!-- Creator Info Header -->
+      <div style="position: relative;">
+        <img src="images/banner.jpg" style="width: 100%; height: 110px; object-fit: cover; display: block;">
+        <div style="padding: 0 1.5rem; display: flex; align-items: flex-end; margin-top: -36px; position: relative; gap: 1rem; z-index: 2;">
+          <img src="images/avatar.jpg" style="width: 72px; height: 72px; border-radius: 50%; border: 3px solid white; background: #eee; object-fit: cover;">
+          <div style="margin-bottom: 0.25rem;">
+            <div style="font-weight: 700; font-size: 1.05rem; color: var(--text-main);">Juliana Bonde</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">@julianabonde</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding: 1.5rem;">
+        <div style="font-weight: 700; margin-bottom: 1rem; color: var(--text-main); font-size: 1.05rem;">Benefícios exclusivos</div>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; font-size: 0.9rem; color: var(--text-main);">
+          <div style="display: flex; align-items: center; gap: 0.5rem;"><i data-feather="check" style="color: #f97316; width: 18px;"></i> Acesso ao conteúdo</div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;"><i data-feather="check" style="color: #f97316; width: 18px;"></i> Chat exclusivo com o criador</div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;"><i data-feather="check" style="color: #f97316; width: 18px;"></i> Cancele a qualquer hora</div>
+        </div>
+
+        <div style="text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 1.2rem 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); margin-bottom: 1.5rem;">
+          É necessário concluir o cadastro antes de efetuar uma compra.
+        </div>
+
+        <form id="registerForm" onsubmit="submitRegistration(event)">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+            <div class="reg-input-container">
+              <label class="reg-label">Apelido</label>
+              <input type="text" class="reg-input" id="regApelido" placeholder="Gabriel" required>
+            </div>
+            <div class="reg-input-container">
+              <label class="reg-label">E-mail</label>
+              <input type="email" class="reg-input" id="regEmail" placeholder="jgabrielrc7@gmail.com" required>
+            </div>
+            <div class="reg-input-container">
+              <label class="reg-label">Nome Completo</label>
+              <input type="text" class="reg-input" id="regNome" required>
+            </div>
+            <div class="reg-input-container">
+              <label class="reg-label">Data de Nascimento</label>
+              <input type="text" class="reg-input" id="regData" placeholder="DD/MM/AAAA" required>
+            </div>
+          </div>
+
+          <button type="submit" class="reg-btn">Finalizar cadastro</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- Pix Payment Modal -->
   <div class="modal-overlay" id="pixModal">
     <div class="payment-modal">
@@ -807,6 +862,25 @@
 
     let pixPollingInterval = null;
     let currentPixCode = "";
+
+    let pendingAmount = 0;
+    let pendingPlanName = '';
+
+    function initiateCheckout(amount, planName) {
+      pendingAmount = amount;
+      pendingPlanName = planName;
+      document.getElementById('registerModal').classList.add('active');
+    }
+
+    function closeRegisterModal() {
+      document.getElementById('registerModal').classList.remove('active');
+    }
+
+    function submitRegistration(event) {
+      event.preventDefault();
+      closeRegisterModal();
+      openPaymentModal(pendingAmount, pendingPlanName);
+    }
 
     async function openPaymentModal(amount, planName) {
       const modal = document.getElementById('pixModal');
