@@ -99,7 +99,13 @@ app.get('*', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
-app.listen(PORT, () => {
-  console.log(`✅ Backend rodando seguro na porta ${PORT}`);
-  console.log(`🔗 Frontend deve mandar requests para http://localhost:${PORT}/api/checkout`);
-});
+// Exporta as rotas para funcionar como Função Serverless na Vercel
+module.exports = app;
+
+// Só sobe a porta se estiver rodando o script localmente (fora da Vercel)
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`✅ Backend rodando seguro na porta ${PORT}`);
+    console.log(`🔗 Frontend deve mandar requests para http://localhost:${PORT}/api/checkout`);
+  });
+}
