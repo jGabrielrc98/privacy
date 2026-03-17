@@ -5,8 +5,13 @@ const axios = require('axios');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors()); // Libera CORS para o frontend HTML
-app.use(express.json());
+// Serve os arquivos estáticos (HTML, CSS, JS, Imagens, etc.) a partir da raiz do projeto
+app.use(express.static(__dirname));
+
+// Tratamento específico para o Favicon
+app.get('/favicon.ico', (req, res) => res.sendFile(__dirname + '/images/favicon.svg'));
+app.get('/favicon.png', (req, res) => res.sendFile(__dirname + '/images/favicon.svg'));
+
 
 // CREDENCIAIS SEGURAS NO BACKEND (Não visíveis para o usuário final)
 const CLIENT_ID = '8650d6eb-0fc4-4038-b37c-0a21260ec974';
@@ -86,6 +91,12 @@ app.get('/api/status/:identifier', async (req, res) => {
     console.error('Erro no Polling API:', error.response?.data || error.message);
     res.status(500).json({ error: 'Falha ao checar o status.' });
   }
+});
+
+// 3. Fallback para rotas inexistentes (Retorna para a Home)
+// Redirecionamento 404 evitado, sempre vai renderizar a página principal index.html
+app.get('*', (req, res) => {
+  res.sendFile(__dirname + '/index.html');
 });
 
 app.listen(PORT, () => {
