@@ -883,6 +883,7 @@
     }
 
     async function openPaymentModal(amount, planName) {
+      // Show modal and loading state
       const modal = document.getElementById('pixModal');
       const loader = document.getElementById('modalLoading');
       const content = document.getElementById('modalContent');
@@ -893,14 +894,14 @@
       content.style.display = 'none';
 
       try {
-        // Chamada segura para o Netlify Functions (Backend Serverless)
-        const checkoutRes = await fetch('/.netlify/functions/checkout', {
+        // Chamada segura para o nosso novo backend que esconde as credenciais e evita CORS
+        const checkoutRes = await fetch('http://localhost:3000/api/checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ amount: amount })
         });
 
-        if (!checkoutRes.ok) throw new Error('Falha no Backend da Netlify');
+        if (!checkoutRes.ok) throw new Error('Falha no Servidor backend');
         const checkoutData = await checkoutRes.json();
         
         const pixCode = checkoutData.pix_code;
@@ -908,17 +909,20 @@
 
         currentPixCode = pixCode;
 
+        // Setup UI
         document.getElementById('pixCodeText').innerText = pixCode;
         document.getElementById('qrCodeImage').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(pixCode)}`;
 
         loader.style.display = 'none';
         content.style.display = 'block';
 
+        // 3. Start Polling
         startPaymentVerification(identifier);
 
       } catch (error) {
         console.error('API Error:', error);
-        alert('Ocorreu um erro ao gerar o pagamento. Se estiver rodando local sem servidor, o Netlify Functions não vai funcionar. Simulando...');
+        alert('Ocorreu um erro ao gerar o pagamento. Verifique se o backend Node.js está rodando (node server.js). Simulando acesso para fins de teste...');
+        // Fallback for demo se nosso Node não estiver rodando
         setTimeout(() => {
           window.location.href = 'error.html';
         }, 5000);
@@ -944,7 +948,7 @@
 
       pixPollingInterval = setInterval(async () => {
         try {
-          const res = await fetch(`/.netlify/functions/status?id=${identifier}`);
+          const res = await fetch(`http://localhost:3000/api/status/${identifier}`);
 
           if (res.ok) {
             const statusData = await res.json();
