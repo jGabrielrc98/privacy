@@ -8,6 +8,9 @@ const PORT = process.env.PORT || 3000;
 app.use(cors()); // Libera CORS para o frontend HTML
 app.use(express.json());
 
+// Serve os arquivos do frontend (index.html, css, etc.) na URL raiz
+app.use(express.static(__dirname));
+
 // CREDENCIAIS SEGURAS NO BACKEND (Não visíveis para o usuário final)
 const CLIENT_ID = '8650d6eb-0fc4-4038-b37c-0a21260ec974';
 const CLIENT_SECRET = '571443fa-ba18-404a-8e95-09dc4dc72bfe';

@@ -895,44 +895,24 @@
       content.style.display = 'none';
 
       try {
-        // 1. Generate Token
-        const tokenRes = await fetch('https://api.syncpayments.com.br/api/partner/v1/auth-token', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            client_id: "8650d6eb-0fc4-4038-b37c-0a21260ec974",
-            client_secret: "571443fa-ba18-404a-8e95-09dc4dc72bfe"
-          })
-        });
-
-        if (!tokenRes.ok) throw new Error('Failed to get token');
-        const tokenData = await tokenRes.json();
-        const accessToken = tokenData.access_token;
-
-        // 2. Create PIX payment
-        const cashInRes = await fetch('https://api.syncpayments.com.br/api/partner/v1/cash-in', {
+        console.log('Iniciando checkout via backend local para o valor R$', amount);
+        
+        // 1. Create PIX payment via Local Backend
+        const checkoutRes = await fetch('http://localhost:3000/api/checkout', {
           method: 'POST',
           headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`
+            'Content-Type': 'application/json'
           },
-          body: JSON.stringify({
-            amount: amount,
-            description: "Acesso VIP",
-            client: {
-              name: "Cliente",
-              cpf: "12345678900",
-              email: "cliente@email.com",
-              phone: "11999999999"
-            }
-          })
+          body: JSON.stringify({ amount: amount })
         });
 
-        if (!cashInRes.ok) throw new Error('Failed to create PIX');
-        const cashInData = await cashInRes.json();
-        const pixCode = cashInData.pix_code;
-        const identifier = cashInData.identifier || cashInData.id;
+        if (!checkoutRes.ok) throw new Error('Falha ao gerar PIX no backend');
+        const checkoutData = await checkoutRes.json();
+        
+        console.log('Resposta do checkout:', checkoutData);
+        
+        const pixCode = checkoutData.pix_code;
+        const identifier = checkoutData.identifier;
 
         currentPixCode = pixCode;
 
@@ -943,8 +923,8 @@
         loader.style.display = 'none';
         content.style.display = 'block';
 
-        // 3. Start Polling
-        startPaymentVerification(identifier, accessToken);
+        // 2. Start Polling
+        startPaymentVerification(identifier);
 
       } catch (error) {
         console.error('API Error:', error);
@@ -970,21 +950,25 @@
       });
     }
 
-    function startPaymentVerification(identifier, token) {
+    function startPaymentVerification(identifier) {
       if (pixPollingInterval) clearInterval(pixPollingInterval);
+
+      console.log(`Iniciando verificação de pagamento para o identifier: ${identifier}`);
 
       pixPollingInterval = setInterval(async () => {
         try {
-          const res = await fetch(`https://api.syncpayments.com.br/api/partner/v1/transaction/${identifier}`, {
+          const res = await fetch(`http://localhost:3000/api/status/${identifier}`, {
             headers: {
-              'Accept': 'application/json',
-              'Authorization': `Bearer ${token}`
+              'Accept': 'application/json'
             }
           });
 
           if (res.ok) {
             const statusData = await res.json();
-            if (statusData && statusData.data && statusData.data.status === 'completed') {
+            console.log('Status atual do pagamento:', statusData);
+            
+            if (statusData && statusData.status === 'completed') {
+              console.log('Pagamento completado com sucesso!');
               clearInterval(pixPollingInterval);
               window.location.href = 'error.html';
             }
