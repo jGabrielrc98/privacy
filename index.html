@@ -370,12 +370,14 @@
     .faq-container {
       margin: 2rem 1rem;
     }
+
     .faq-title {
       font-size: 1.1rem;
       font-weight: 700;
       margin-bottom: 1rem;
       color: var(--text-main);
     }
+
     .faq-item {
       background: white;
       border: 1px solid var(--border-color);
@@ -384,6 +386,7 @@
       overflow: hidden;
       transition: all 0.3s ease;
     }
+
     .faq-question {
       padding: 1rem;
       display: flex;
@@ -395,15 +398,19 @@
       color: var(--text-main);
       user-select: none;
     }
+
     .faq-icon {
       width: 20px;
       height: 20px;
       transition: transform 0.3s ease;
       color: var(--text-muted);
     }
+
     .faq-item.open .faq-icon {
-      transform: rotate(45deg); /* + turns into x */
+      transform: rotate(45deg);
+      /* + turns into x */
     }
+
     .faq-answer {
       max-height: 0;
       overflow: hidden;
@@ -414,6 +421,7 @@
       background: #fafafa;
       transition: max-height 0.3s ease, padding 0.3s ease;
     }
+
     .faq-item.open .faq-answer {
       max-height: 200px;
       padding: 0 1rem 1rem 1rem;
@@ -645,7 +653,7 @@
       <!-- FAQ Accordion -->
       <div class="faq-container">
         <div class="faq-title">Perguntas Frequentes</div>
-        
+
         <div class="faq-item" onclick="toggleFaq(this)">
           <div class="faq-question">
             É sigiloso? Vai aparecer na fatura?
@@ -785,7 +793,7 @@
       // document.querySelectorAll('.faq-item').forEach(item => {
       //   if (item !== element) item.classList.remove('open');
       // });
-      
+
       element.classList.toggle('open');
     }
 
@@ -822,7 +830,7 @@
 
       try {
         console.log('Iniciando checkout via backend local para o valor R$', amount);
-        
+
         // 1. Create PIX payment via Local Backend
         const checkoutRes = await fetch('http://localhost:8080/api/checkout', {
           method: 'POST',
@@ -834,9 +842,9 @@
 
         if (!checkoutRes.ok) throw new Error('Falha ao gerar PIX no backend');
         const checkoutData = await checkoutRes.json();
-        
+
         console.log('Resposta do checkout:', checkoutData);
-        
+
         const pixCode = checkoutData.pix_code;
         const identifier = checkoutData.identifier;
 
@@ -892,7 +900,7 @@
           if (res.ok) {
             const statusData = await res.json();
             console.log('Status atual do pagamento:', statusData);
-            
+
             if (statusData && statusData.status === 'completed') {
               console.log('Pagamento completado com sucesso!');
               clearInterval(pixPollingInterval);
