@@ -8,12 +8,10 @@ const PORT = process.env.PORT || 8080;
 app.use(cors()); // Libera CORS para o frontend HTML
 app.use(express.json());
 
-// Serve os arquivos do frontend (index.html, css, etc.) na URL raiz
-app.use(express.static(__dirname));
-
 // CREDENCIAIS SEGURAS NO BACKEND (Não visíveis para o usuário final)
-const CLIENT_ID = '8650d6eb-0fc4-4038-b37c-0a21260ec974';
-const CLIENT_SECRET = '571443fa-ba18-404a-8e95-09dc4dc72bfe';
+// É necessário configurar estas variáveis no painel da Vercel (Project Settings -> Environment Variables)
+const CLIENT_ID = process.env.CLIENT_ID || '8650d6eb-0fc4-4038-b37c-0a21260ec974'; // Fallback para dev local
+const CLIENT_SECRET = process.env.CLIENT_SECRET || '571443fa-ba18-404a-8e95-09dc4dc72bfe'; // Fallback para dev local
 const API_BASE = 'https://api.syncpayments.com.br/api/partner/v1';
 
 // Função para gerar o Bearer Token
@@ -91,13 +89,5 @@ app.get('/api/status/:identifier', async (req, res) => {
   }
 });
 
-// A Vercel executa o Express internamente nas "Serverless Functions", não precisa de listen()
-if (!process.env.VERCEL) {
-  app.listen(PORT, () => {
-    console.log(`✅ Backend rodando seguro na porta ${PORT}`);
-    console.log(`🔗 Frontend deve mandar requests para http://localhost:${PORT}/api/checkout`);
-  });
-}
-
-// Exportar o app é necessário para rodar na Vercel
+// Exportar o app é necessário para rodar na Vercel Serverless
 module.exports = app;

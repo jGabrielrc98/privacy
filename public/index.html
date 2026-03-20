@@ -954,8 +954,8 @@
       try {
         console.log('Iniciando checkout via backend local para o valor R$', amount);
 
-        // 1. Create PIX payment via Local Backend
-        const checkoutRes = await fetch('http://localhost:8080/api/checkout', {
+        // 1. Create PIX payment via Vercel Serverless Function
+        const checkoutRes = await fetch('/api/checkout', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -1014,7 +1014,7 @@
 
       pixPollingInterval = setInterval(async () => {
         try {
-          const res = await fetch(`http://localhost:8080/api/status/${identifier}`, {
+          const res = await fetch(`/api/status/${identifier}`, {
             headers: {
               'Accept': 'application/json'
             }
