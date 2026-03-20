@@ -23,7 +23,7 @@ async function getAuthToken() {
   return response.data.access_token;
 }
 
-// 1. Rota unificada de Checkout (Gera token interno e cria o Pix)
+// 1. Rota unificada de Checkout (Gera token interno e cria o Pixx)
 app.post('/api/checkout', async (req, res) => {
   try {
     const { amount } = req.body;
