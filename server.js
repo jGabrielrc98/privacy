@@ -91,7 +91,13 @@ app.get('/api/status/:identifier', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`✅ Backend rodando seguro na porta ${PORT}`);
-  console.log(`🔗 Frontend deve mandar requests para http://localhost:${PORT}/api/checkout`);
-});
+// A Vercel executa o Express internamente nas "Serverless Functions", não precisa de listen()
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`✅ Backend rodando seguro na porta ${PORT}`);
+    console.log(`🔗 Frontend deve mandar requests para http://localhost:${PORT}/api/checkout`);
+  });
+}
+
+// Exportar o app é necessário para rodar na Vercel
+module.exports = app;
