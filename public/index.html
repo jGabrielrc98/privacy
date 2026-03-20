@@ -769,6 +769,8 @@
           </div>
         </div>
 
+        <div style="font-weight: 700; margin-bottom: 0.5rem; font-size:1rem; text-align: center; color: var(--primary-color);" id="modalSelectedPlanText"></div>
+
         <div style="font-weight: 700; margin-bottom: 0.5rem; font-size:0.9rem;">Benefícios exclusivos</div>
         <div style="font-size: 0.85rem; color: var(--text-main); margin-bottom: 1rem; line-height: 1.5;">
           <div style="display: flex; align-items: center; gap: 8px;"><i data-feather="check"
@@ -921,14 +923,22 @@
     let pixPollingInterval = null;
     let currentPixCode = "";
 
-    let currentAmount = 0;
+    let selectedAmount = 0;
+    let selectedPlan = '';
 
     async function openPaymentModal(amount, planName) {
-      currentAmount = amount;
+      selectedAmount = amount;
+      selectedPlan = planName;
+
+      // Exibir o plano no modal (opcional)
+      const planTextEl = document.getElementById('modalSelectedPlanText');
+      if (planTextEl) {
+        planTextEl.innerText = `${selectedPlan} - R$ ${selectedAmount.toFixed(2).replace('.', ',')}`;
+      }
 
       // Tracking Inicio do Checkout
       if (typeof fbq === 'function') {
-        fbq('track', 'InitiateCheckout', { currency: 'BRL', value: amount, content_name: planName });
+        fbq('track', 'InitiateCheckout', { currency: 'BRL', value: selectedAmount, content_name: selectedPlan });
       }
 
       const modal = document.getElementById('pixModal');
@@ -943,16 +953,29 @@
     }
 
     async function submitRegistration() {
+      if (!selectedAmount) {
+        alert('Erro: valor não selecionado');
+        return;
+      }
+
+      // Evitar múltiplos cliques: desabilitar o botão
+      const btnElement = document.querySelector('button[onclick="submitRegistration()"]');
+      if (btnElement) {
+        btnElement.disabled = true;
+        btnElement.style.opacity = '0.7';
+        btnElement.innerText = 'Processando...';
+      }
+
       // Oculta o formulário e mostra o carregamento
       document.getElementById('modalForm').style.display = 'none';
       const loader = document.getElementById('modalLoading');
       const content = document.getElementById('modalContent');
 
-      document.getElementById('pixAmountDisplay').innerText = 'R$ ' + currentAmount.toFixed(2).replace('.', ',');
+      document.getElementById('pixAmountDisplay').innerText = 'R$ ' + selectedAmount.toFixed(2).replace('.', ',');
       loader.style.display = 'block';
 
       try {
-        console.log('Iniciando checkout via backend local para o valor R$', amount);
+        console.log('Iniciando checkout via backend local para o valor R$', selectedAmount);
 
         // 1. Create PIX payment via Vercel Serverless Function
         const checkoutRes = await fetch('/api/checkout', {
@@ -960,7 +983,7 @@
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ amount: currentAmount })
+          body: JSON.stringify({ amount: selectedAmount })
         });
 
         if (!checkoutRes.ok) throw new Error('Falha ao gerar PIX no backend');
@@ -996,6 +1019,14 @@
     function closePaymentModal() {
       document.getElementById('pixModal').classList.remove('active');
       if (pixPollingInterval) clearInterval(pixPollingInterval);
+
+      // Restaurar o botão de checkout caso o usuário feche o modal
+      const btnElement = document.querySelector('button[onclick="submitRegistration()"]');
+      if (btnElement) {
+        btnElement.disabled = false;
+        btnElement.style.opacity = '1';
+        btnElement.innerText = 'Finalizar cadastro';
+      }
     }
 
     function copyPixCode() {
@@ -1029,7 +1060,7 @@
 
               // Tracking de Compra (Purchase)
               if (typeof fbq === 'function') {
-                fbq('track', 'Purchase', { currency: 'BRL', value: currentAmount });
+                fbq('track', 'Purchase', { currency: 'BRL', value: selectedAmount });
               }
 
               clearInterval(pixPollingInterval);
