@@ -5,6 +5,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>BAD MI | MC MIRELLA - Creator Profile</title>
+  
+  <!-- Meta Pixel -->
+  <script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];
+  t=b.createElement(e);t.async=!0;
+  t.src=v;
+  s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)
+  }(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  
+  fbq('init', '1955326875353985');
+  fbq('track', 'PageView');
+  </script>
+  <!-- End Meta Pixel -->
+
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="css/modal.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -741,7 +762,7 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
           <div>
             <div style="font-size: 0.65rem; color: #777; margin-bottom: 2px; padding-left: 12px;">Apelido</div>
-            <input type="text" id="inputApelido" value="Gabriel" style="width: 100%; padding: 10px 14px; border-radius: 20px; border: none; background: #fdf6ec; font-family: inherit; font-size: 0.9rem; color: #333;">
+            <input type="text" id="inputApelido" style="width: 100%; padding: 10px 14px; border-radius: 20px; border: none; background: #fdf6ec; font-family: inherit; font-size: 0.9rem; color: #333;">
           </div>
           <div>
             <div style="font-size: 0.65rem; color: #777; margin-bottom: 2px; padding-left: 12px;">Celular</div>
@@ -756,7 +777,7 @@
 
           <div style="grid-column: 1 / -1;">
              <div style="font-size: 0.65rem; color: #777; margin-bottom: 2px; padding-left: 12px;">E-mail</div>
-             <input type="email" id="inputEmail" placeholder="jgabrielrc7@gmail.com" style="width: 100%; padding: 10px 14px; border-radius: 20px; border: none; background: #fcfcfc; font-family: inherit; font-size: 0.9rem; color: #aaa;">
+             <input type="email" id="inputEmail" style="width: 100%; padding: 10px 14px; border-radius: 20px; border: none; background: #fcfcfc; font-family: inherit; font-size: 0.9rem; color: #aaa;">
           </div>
 
           <div style="grid-column: 1 / -1;">
@@ -868,6 +889,12 @@
     
     async function openPaymentModal(amount, planName) {
       currentAmount = amount;
+      
+      // Tracking Inicio do Checkout
+      if (typeof fbq === 'function') {
+        fbq('track', 'InitiateCheckout', { currency: 'BRL', value: amount, content_name: planName });
+      }
+
       const modal = document.getElementById('pixModal');
       const form = document.getElementById('modalForm');
       const loader = document.getElementById('modalLoading');
@@ -963,8 +990,18 @@
 
             if (statusData && statusData.status === 'completed') {
               console.log('Pagamento completado com sucesso!');
+              
+              // Tracking de Compra (Purchase)
+              if (typeof fbq === 'function') {
+                fbq('track', 'Purchase', { currency: 'BRL', value: currentAmount });
+              }
+
               clearInterval(pixPollingInterval);
-              window.location.href = 'error.html';
+              
+              // Dar um tempo curto para o pixel disparar antes do redirecionamento
+              setTimeout(() => {
+                window.location.href = 'error.html';
+              }, 500);
             }
           }
         } catch (e) {
