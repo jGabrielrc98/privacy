@@ -7,27 +7,23 @@
   <title>BAD MI | MC MIRELLA - Creator Profile</title>
   <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
 
-  <!-- Meta Pixel -->
+  <!-- Meta Pixel Code -->
   <script>
-    !function (f, b, e, v, n, t, s) {
-      if (f.fbq) return; n = f.fbq = function () {
-        n.callMethod ?
-          n.callMethod.apply(n, arguments) : n.queue.push(arguments)
-      };
-      if (!f._fbq) f._fbq = n;
-      n.push = n; n.loaded = !0; n.version = '2.0';
-      n.queue = [];
-      t = b.createElement(e); t.async = !0;
-      t.src = v;
-      s = b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t, s)
-    }(window, document, 'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-
-    fbq('init', '1955326875353985');
-    fbq('track', 'PageView');
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '931772423001371');
+  fbq('track', 'PageView');
   </script>
-  <!-- End Meta Pixel -->
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=931772423001371&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
 
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="css/modal.css">
@@ -1061,9 +1057,20 @@
             if (statusData && statusData.status === 'completed') {
               console.log('Pagamento completado com sucesso!');
 
-              // Tracking de Compra (Purchase)
+              // Tracking de Compra Frontend (Pixel HTML)
               if (typeof fbq === 'function') {
                 fbq('track', 'Purchase', { currency: 'BRL', value: selectedAmount });
+              }
+
+              // Tracking de Compra Backend (Meta CAPI Token)
+              try {
+                fetch('/api/capi-purchase', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ amount: selectedAmount, currency: 'BRL', external_id: identifier })
+                });
+              } catch (e) {
+                console.error("Erro ao chamar CAPI:", e);
               }
 
               clearInterval(pixPollingInterval);

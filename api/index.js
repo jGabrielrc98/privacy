@@ -89,5 +89,49 @@ app.get('/api/status/:identifier', async (req, res) => {
   }
 });
 
+// 3. Rota para enviar evento de Purchase via API de Conversões do Meta
+app.post('/api/capi-purchase', async (req, res) => {
+  try {
+    const { amount, currency = 'BRL', external_id } = req.body;
+    
+    const META_PIXEL_ID = process.env.META_PIXEL_ID || '931772423001371';
+    const META_TOKEN = process.env.META_CAPI_TOKEN;
+    
+    if (!META_TOKEN) {
+      console.error('META_CAPI_TOKEN não está configurado no ambiente.');
+      return res.status(500).json({ error: 'META_CAPI_TOKEN not configured' });
+    }
+
+    const eventData = {
+      data: [
+        {
+          event_name: 'Purchase',
+          event_time: Math.floor(Date.now() / 1000),
+          action_source: 'website',
+          user_data: {
+            // Em um sistema real, você passaria emai/telefone hasheado em SHA256 aqui se tiver
+            client_ip_address: req.ip || req.headers['x-forwarded-for'],
+            client_user_agent: req.headers['user-agent'],
+            external_id: external_id ? [external_id] : undefined
+          },
+          custom_data: {
+            currency: currency,
+            value: amount
+          }
+        }
+      ]
+    };
+
+    const capiUrl = `https://graph.facebook.com/v19.0/${META_PIXEL_ID}/events?access_token=${META_TOKEN}`;
+    
+    const response = await axios.post(capiUrl, eventData);
+    
+    res.json({ success: true, meta_response: response.data });
+  } catch (error) {
+    console.error('Erro no Meta CAPI:', error.response?.data || error.message);
+    res.status(500).json({ error: 'Falha ao enviar evento para o Meta.' });
+  }
+});
+
 // Exportar o app é necessário para rodar na Vercel Serverless
 module.exports = app;
